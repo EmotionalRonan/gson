@@ -17,12 +17,15 @@
 package com.google.gson.internal.bind;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -133,10 +136,11 @@ public final class TypeAdapters {
   public static final TypeAdapter<Boolean> BOOLEAN = new TypeAdapter<Boolean>() {
     @Override
     public Boolean read(JsonReader in) throws IOException {
-      if (in.peek() == JsonToken.NULL) {
+      JsonToken peek = in.peek();
+      if (peek == JsonToken.NULL) {
         in.nextNull();
         return null;
-      } else if (in.peek() == JsonToken.STRING) {
+      } else if (peek == JsonToken.STRING) {
         // support strings for compatibility with GSON 1.7
         return Boolean.parseBoolean(in.nextString());
       }
@@ -775,9 +779,20 @@ public final class TypeAdapters {
 
     public EnumTypeAdapter(Class<T> classOfT) {
       try {
-        for (T constant : classOfT.getEnumConstants()) {
+        for (final Field field : classOfT.getDeclaredFields()) {
+          if (!field.isEnumConstant()) {
+            continue;
+          }
+          AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override public Void run() {
+              field.setAccessible(true);
+              return null;
+            }
+          });
+          @SuppressWarnings("unchecked")
+          T constant = (T)(field.get(null));
           String name = constant.name();
-          SerializedName annotation = classOfT.getField(name).getAnnotation(SerializedName.class);
+          SerializedName annotation = field.getAnnotation(SerializedName.class);
           if (annotation != null) {
             name = annotation.value();
             for (String alternate : annotation.alternate()) {
@@ -787,7 +802,7 @@ public final class TypeAdapters {
           nameToConstant.put(name, constant);
           constantToName.put(constant, name);
         }
-      } catch (NoSuchFieldException e) {
+      } catch (IllegalAccessException e) {
         throw new AssertionError(e);
       }
     }

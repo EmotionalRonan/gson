@@ -44,8 +44,12 @@ public final class JsonArray extends JsonElement implements Iterable<JsonElement
     elements = new ArrayList<JsonElement>(capacity);
   }
 
+  /**
+   * Creates a deep copy of this element and all its children
+   * @since 2.8.2
+   */
   @Override
-  JsonArray deepCopy() {
+  public JsonArray deepCopy() {
     if (!elements.isEmpty()) {
       JsonArray result = new JsonArray(elements.size());
       for (JsonElement element : elements) {
@@ -166,6 +170,15 @@ public final class JsonArray extends JsonElement implements Iterable<JsonElement
    */
   public int size() {
     return elements.size();
+  }
+  
+  /**
+   * Returns true if the array is empty
+   *
+   * @return true if the array is empty
+   */
+  public boolean isEmpty() {
+    return elements.isEmpty();
   }
 
   /**

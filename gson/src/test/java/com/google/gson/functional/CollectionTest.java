@@ -42,6 +42,7 @@ import com.google.gson.common.TestTypes.BagOfPrimitives;
 import com.google.gson.reflect.TypeToken;
 
 import junit.framework.TestCase;
+import static org.junit.Assert.assertArrayEquals;
 
 /**
  * Functional tests for Json serialization and deserialization of collections.
@@ -70,7 +71,7 @@ public class CollectionTest extends TestCase {
     Type collectionType = new TypeToken<Collection<Integer>>() { }.getType();
     Collection<Integer> target = gson.fromJson(json, collectionType);
     int[] expected = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    MoreAsserts.assertEquals(expected, toIntArray(target));
+    assertArrayEquals(expected, toIntArray(target));
   }
 
   public void testTopLevelListOfIntegerCollectionsDeserialization() throws Exception {
@@ -86,7 +87,7 @@ public class CollectionTest extends TestCase {
     }
 
     for (int i = 0; i < 3; i++) {
-      MoreAsserts.assertEquals(expected[i], toIntArray(target.get(i)));
+      assertArrayEquals(expected[i], toIntArray(target.get(i)));
     }
   }
 
@@ -393,4 +394,23 @@ public class CollectionTest extends TestCase {
       assertTrue(entry.value == 1 || entry.value == 2);
     }
   }
+
+  private class BigClass { private Map<String, ? extends List<SmallClass>> inBig; }
+
+  private class SmallClass { private String inSmall; }
+
+  public void testIssue1107() {
+    String json = "{\n" +
+            "  \"inBig\": {\n" +
+            "    \"key\": [\n" +
+            "      { \"inSmall\": \"hello\" }\n" +
+            "    ]\n" +
+            "  }\n" +
+            "}";
+    BigClass bigClass = new Gson().fromJson(json, BigClass.class);
+    SmallClass small = bigClass.inBig.get("key").get(0);
+    assertNotNull(small);
+    assertEquals("hello", small.inSmall);
+  }
+
 }

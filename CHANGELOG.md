@@ -1,9 +1,47 @@
 Change Log
 ==========
 
+## Version 2.8.7
+
+* Fixed `ISO8601UtilsTest` failing on systems with UTC+X.
+* Improved javadoc for `JsonStreamParser`.
+* Updated proguard.cfg (#1693).
+* Fixed `IllegalStateException` in `JsonTreeWriter` (#1592).
+* Added `JsonArray.isEmpty()` (#1640).
+* Added new test cases (#1638).
+* Fixed OSGi metadata generation to work on JavaSE < 9 (#1603).
+
+## Version 2.8.6
+_2019-10-04_  [GitHub Diff](https://github.com/google/gson/compare/gson-parent-2.8.5...gson-parent-2.8.6)
+ * Added static methods `JsonParser.parseString` and `JsonParser.parseReader` and deprecated instance method `JsonParser.parse`
+ * Java 9 module-info support
+
+## Version 2.8.5
+_2018-05-21_  [GitHub Diff](https://github.com/google/gson/compare/gson-parent-2.8.4...gson-parent-2.8.5)
+ * Print Gson version while throwing AssertionError and IllegalArgumentException
+ * Moved `utils.VersionUtils` class to `internal.JavaVersion`. This is a potential backward incompatible change from 2.8.4
+ * Fixed issue https://github.com/google/gson/issues/1310 by supporting Debian Java 9
+
+## Version 2.8.4
+_2018-05-01_  [GitHub Diff](https://github.com/google/gson/compare/gson-parent-2.8.3...gson-parent-2.8.4)
+ * Added a new FieldNamingPolicy, `LOWER_CASE_WITH_DOTS` that mapps JSON name `someFieldName` to `some.field.name`
+ * Fixed issue https://github.com/google/gson/issues/1305 by removing compile/runtime dependency on `sun.misc.Unsafe`
+
+## Version 2.8.3
+_2018-04-27_  [GitHub Diff](https://github.com/google/gson/compare/gson-parent-2.8.2...gson-parent-2.8.3)
+ * Added a new API, `GsonBuilder.newBuilder()` that clones the current builder
+ * Preserving DateFormatter behavior on JDK 9
+ * Numerous other bugfixes
+
+## Version 2.8.2
+_2017-09-19_  [GitHub Diff](https://github.com/google/gson/compare/gson-parent-2.8.1...gson-parent-2.8.2)
+ * Introduced a new API, `JsonElement.deepCopy()`
+ * Numerous other bugfixes
+
 ## Version 2.8.1
-_2016-10-26_  [GitHub Diff](https://github.com/google/gson/compare/gson-parent-2.8.0...gson-parent-2.8.1)
+_2017-05-30_  [GitHub Diff](https://github.com/google/gson/compare/gson-parent-2.8.0...gson-parent-2.8.1)
  * New: `JsonObject.keySet()`
+ * `@JsonAdapter` annotation can now use `JsonSerializer` and `JsonDeserializer` as well.
 
 ## Version 2.8
 _2016-10-26_  [GitHub Diff](https://github.com/google/gson/compare/gson-parent-2.7...gson-parent-2.8.0)
