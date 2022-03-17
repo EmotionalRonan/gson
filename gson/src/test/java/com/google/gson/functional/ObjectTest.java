@@ -55,22 +55,27 @@ import junit.framework.TestCase;
  */
 public class ObjectTest extends TestCase {
   private Gson gson;
-  private TimeZone oldTimeZone = TimeZone.getDefault();
+  private TimeZone oldTimeZone;
+  private Locale oldLocale;
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
     gson = new Gson();
 
+    oldTimeZone = TimeZone.getDefault();
     TimeZone.setDefault(TimeZone.getTimeZone("America/Los_Angeles"));
+    oldLocale = Locale.getDefault();
     Locale.setDefault(Locale.US);
   }
 
   @Override
   protected void tearDown() throws Exception {
     TimeZone.setDefault(oldTimeZone);
+    Locale.setDefault(oldLocale);
     super.tearDown();
   }
+
   public void testJsonInSingleQuotesDeserialization() {
     String json = "{'stringValue':'no message','intValue':10,'longValue':20}";
     BagOfPrimitives target = gson.fromJson(json, BagOfPrimitives.class);
@@ -293,7 +298,7 @@ public class ObjectTest extends TestCase {
     gson = new GsonBuilder()
         .registerTypeHierarchyAdapter(ClassWithNoFields.class,
             new JsonSerializer<ClassWithNoFields>() {
-              public JsonElement serialize(
+              @Override public JsonElement serialize(
                   ClassWithNoFields src, Type typeOfSrc, JsonSerializationContext context) {
                 return new JsonObject();
               }
@@ -337,7 +342,7 @@ public class ObjectTest extends TestCase {
     final Parent p = new Parent();
     Gson gson = new GsonBuilder().registerTypeAdapter(
         Parent.Child.class, new InstanceCreator<Parent.Child>() {
-      public Parent.Child createInstance(Type type) {
+      @Override public Parent.Child createInstance(Type type) {
         return p.new Child();
       }
     }).create();

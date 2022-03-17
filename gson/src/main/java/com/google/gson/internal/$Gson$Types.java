@@ -505,15 +505,15 @@ public final class $Gson$Types {
       }
     }
 
-    public Type[] getActualTypeArguments() {
+    @Override public Type[] getActualTypeArguments() {
       return typeArguments.clone();
     }
 
-    public Type getRawType() {
+    @Override public Type getRawType() {
       return rawType;
     }
 
-    public Type getOwnerType() {
+    @Override public Type getOwnerType() {
       return ownerType;
     }
 
@@ -552,7 +552,7 @@ public final class $Gson$Types {
       this.componentType = canonicalize(componentType);
     }
 
-    public Type getGenericComponentType() {
+    @Override public Type getGenericComponentType() {
       return componentType;
     }
 
@@ -574,8 +574,9 @@ public final class $Gson$Types {
 
   /**
    * The WildcardType interface supports multiple upper bounds and multiple
-   * lower bounds. We only support what the Java 6 language needs - at most one
-   * bound. If a lower bound is set, the upper bound must be Object.class.
+   * lower bounds. We only support what the target Java version supports - at most one
+   * bound, see also https://bugs.openjdk.java.net/browse/JDK-8250660. If a lower bound
+   * is set, the upper bound must be Object.class.
    */
   private static final class WildcardTypeImpl implements WildcardType, Serializable {
     private final Type upperBound;
@@ -600,11 +601,11 @@ public final class $Gson$Types {
       }
     }
 
-    public Type[] getUpperBounds() {
+    @Override public Type[] getUpperBounds() {
       return new Type[] { upperBound };
     }
 
-    public Type[] getLowerBounds() {
+    @Override public Type[] getLowerBounds() {
       return lowerBound != null ? new Type[] { lowerBound } : EMPTY_TYPE_ARRAY;
     }
 
